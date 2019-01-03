@@ -166,8 +166,6 @@ plot(wine_data$residual.sugar, wine_data$quality)
 abline(lm(wine_data$quality~wine_data$residual.sugar),col="red",lwd=3)
 
 #grafica correlación:
-install.packages("corrplot")
-
 
 library(corrplot)
 
