@@ -48,12 +48,13 @@ summary(wine_data$total.sulfur.dioxide)
 write.csv(wine_data, file = "data/winedata_output.csv")
 
 #grupos de datos:
-wine_data.high_ph<-subset(wine_data, pH>=3.5)
-wine_data.low_ph<-subset(wine_data, pH<3.5)
-wine_data.high_citric<-subset(wine_data, citric.acid>=0.5)
-wine_data.low_citric<-subset(wine_data, citric.acid<0.5)
-wine_data.high_sugar<-subset(wine_data, residual.sugar>2.5)
-wine_data.low_sugar<-subset(wine_data, residual.sugar<=2.5)
+modified_wine_data = wine_data
+modified_wine_data.high_ph<-subset(wine_data, pH>=3.5)
+modified_wine_data.low_ph<-subset(wine_data, pH<3.5)
+modified_wine_data.high_citric<-subset(wine_data, citric.acid>=0.5)
+modified_wine_data.low_citric<-subset(wine_data, citric.acid<0.5)
+modified_wine_data.high_sugar<-subset(wine_data, residual.sugar>2.5)
+modified_wine_data.low_sugar<-subset(wine_data, residual.sugar<=2.5)
 
 #comprobar normalidad:
 library(nortest)
@@ -70,15 +71,15 @@ for(i in 1:ncol(wine_data)){
 }
 
 #añadir columnas según agrupación:
-wine_data$ph.class = ifelse (wine_data$pH<3.5,0,1)
-wine_data$citric.class = ifelse (wine_data$citric.acid<0.5,0,1)
-wine_data$sugar.class = ifelse (wine_data$residual.sugar<=2.5,0,1)
+modified_wine_data$ph.class = ifelse (wine_data$pH<3.5,0,1)
+modified_wine_data$citric.class = ifelse (wine_data$citric.acid<0.5,0,1)
+modified_wine_data$sugar.class = ifelse (wine_data$residual.sugar<=2.5,0,1)
 
-summary(wine_data)
+summary(modified_wine_data)
 #comprobar homogeneidad:
-fligner.test(quality ~ ph.class, data=wine_data)
-fligner.test(quality ~ citric.class, data=wine_data)
-fligner.test(quality ~ sugar.class, data=wine_data)
+fligner.test(quality ~ ph.class, data=modified_wine_data)
+fligner.test(quality ~ citric.class, data=modified_wine_data)
+fligner.test(quality ~ sugar.class, data=modified_wine_data)
 
 
 corr_matrix <- matrix(nc = 2, nr = 0)
@@ -166,10 +167,9 @@ abline(lm(wine_data$quality~wine_data$residual.sugar),col="red",lwd=3)
 
 #grafica correlación:
 install.packages("corrplot")
+
+
 library(corrplot)
-corrplot(corr_matrix[,0], type = "upper", order = "hclust", 
-         tl.col = "black", tl.srt = 45)
 
-
-scatterplot.matrix(~alcohol+sulphates|quality, data=wine_data,
-                   main="Three Cylinder Options")
+M <- cor(wine_data)
+corrplot(M, method = "circle")
